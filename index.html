@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Malla Curricular - Medicina Veterinaria UNLP</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: white;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #800080;
+    }
+    .container {
+      display: flex;
+      overflow-x: auto;
+      padding: 20px;
+      gap: 20px;
+    }
+    .year {
+      min-width: 300px;
+      flex-shrink: 0;
+    }
+    .semestre {
+      background-color: #f9e1f1;
+      border: 2px solid #c89cf5;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 15px;
+    }
+    .semestre:nth-child(even) {
+      background-color: #e6d6fa;
+    }
+    .materia {
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      font-weight: bold;
+      color: #800080;
+    }
+    .materia.tachada {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+    .materia.bloqueada {
+      background-color: #e0e0e0;
+      color: gray;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Malla Curricular - Medicina UDELAR</h1>
+
+  <div class="container" id="malla"></div>
+
+  <script>
+    const materias = [
+      {
+        anio: "Primero", semestres: [
+          {
+            numero: "1º cuatrimestre", materias: [
+              { id: "bio_cyd", nombre: "Biologia Celular y del Desarrollo" },
+              { id: "bioest", nombre: "Bioestadística" },
+              { id: "biofis", nombre: "Biofisica" },
+              { id: "bioqui", nombre: "Bioquimica" }
+              { id: "emb_ana", nombre: "Embriologia y Anatomia Sistematica" }
+            ]
+          },
+          {
+            numero: "2º cuatrimestre", materias: [
+              { id: "fisqui", nombre: "Fisicoquimica", previas: ["biofis", "bioqui"] },
+              { id: "histo", nombre: "Histologia", previas: ["bio_cyd"] }
+              { id: "micro1", nombre: "Microbiologia I", previas: ["bio_cyd", "bioqui"] }
+            ]
+          }
+        ]
+      },
+      {
+        anio: "Segundo", semestres: [
+          {
+            numero: "1º cuatrimestre", materias: [
+              { id: "fisio", nombre: "Fisiologia ", previas: ["fisqui", "emb_ana", "histo"] },
+              { id: "anatovet", nombre: "Anatomia Veterinaria", previas: ["emb_ana"] }
+              { id: "micro2", nombre: "Microbiologia II", previas: ["micro1", "histo"] }
+              { id: "inmuno_bas", nombre: "Inmunobiologia Animal Básica", previas: ["micro1", "bioqui", "histo"] }
+              { id: "eco_gral_socio", nombre: "Economia General y Sociología", previas: ["bioest"] }
+            ]
+          },
+          {
+            numero: "2º cuatrimestre", materias: [
+              { id: "pat_gral", nombre: "Patología General Veterinaria", previas: ["fisqui", "emb_ana", "histo", "inmuno_bas"] },
+              { id: "parasi", nombre: "Parasitología", previas: ["fisqui", "bioest", "histo", "micro1"] },
+              { id: "epi_salu_bas", nombre: "Epidemiología y Salud Pública Básica", previas: ["bioest"] }
+            ]
+          }
+        ]
+      },
+      {
+        anio: "Tercero", semestres: [
+          {
+            numero: "1º cuatrimestre", materias: [
+              { id: "pat_esp", nombre: "Patología Especial", previas: ["fisio", "anatovet", "micro2", "parasi", "pat_gral"] }
+              { id: "nutrian", nombre: "Nutrición Animal y Alimentos", previas: ["fisio", "anatovet", "eco_gral_socio", "parasi"] }
+              { id: "zoo_gral", nombre: "Zootecnia General", previas: ["fisio", "anatovet", "eco_gral_socio"] }
+              { id: "gene_gral", nombre: "Genética General", previas: ["fisio", "anatovet", "eco_gral_socio"] }
+              { id: "farma_gral", nombre: "Farmacología General", previas: ["fisio", "anatovet", "pat_gral"] }
+            ]
+          },
+          {
+            numero: "2º cuatrimestre", materias: [
+              { id: "sem", nombre: "Semiología", previas: ["fisio", "anatovet", "pat_gral"] }
+              { id: "gen_pob", nombre: "Genética de Poblaciónes y Mejoramiento Animal", previas: ["zoo_gral", "gene_gral"] }
+              { id: "ing_tec", nombre: "Inglés Técnico", previas: [] }
+              { id: "faresp_tox", nombre: "Farmacología Especial y Toxicología", previas: ["parasi", "farma_gral", "micro2"] }
+            ]
+          }
+        ]
+      },
+      {
+        anio: "Cuarto", semestres: [
+          {
+            numero: "1º cuatrimestre", materias: [
+              { id: "prod_aves", nombre: "Producción de Aves y Pilíferos", previas: ["nutrian", "gen_pob"] },
+              { id: "inf_zoo", nombre: "Infectología, Zoonosis y Enfermedades Exóticas y Emergentes", previas: ["sem", "pat_gral", "faresp_tox"] }
+              { id: "ciru_gral1", nombre: "Cirugía General I", previas: ["Primero", "Segundo"] }
+              { id: "produ_bov_c", nombre: "Producción de Bovinos de Carne", previas: ["zoo_gral", "nutrian", "pat_esp", "farma_gral", "gen_pob"] }
+              { id: "epi_salu_pub", nombre: "Epidemiología y Salud Pública Aplicada", previas: ["sem", "pat_esp", "faresp_tox", "zoo_gral"] }
+            ]
+          },
+          {
+            numero: "2º cuatrmestre", materias: [
+              { id: "prod_por", nombre: "Producción Porcina", previas: ["sem", "zoo_gral", "nutrian", "pat_esp", "farma_gral", "gen_pob"] },
+              { id: "prod_equi", nombre: "Producción Equina", previas: ["sem", "zoo_gral", "nutrian", "pat_esp", "farma_gral", "gen_pob"] }
+              { id: "prod_ovi_capri", nombre: "Producción Ovina y Caprina", previas: ["sem", "zoo_gral", "nutrian", "pat_esp", "farma_gral", "gen_pob"] }
+              { id: "enf_rum_cer", nombre: "Enfermedades de los Rumiantes y Cerdos", previas: ["sem", "zoo_gral", "nutrian", "faresp_tox", "inf_zoo", "produ_bov_c", "epi_salu_pub"] }
+              { id: "produ_bov_l", nombre: "Producción de Bovinos de Leche", previas: ["sem", "zoo_gral", "nutrian", "pat_esp", "farma_gral", "gen_pob"] }
+              { id: "gest", nombre: "Gestión de Empresa y Economía Agraria", previas: ["zoo_gral", "nutrian", "gen_pob"] }
+            ]
+          }
+        ]
+      },
+      {
+        anio: "Quinto", semestres: [
+          {
+            numero: "1º cuatrimestre", materias: [
+              { id: "enf_canfel", nombre: "Enfermedades de los Caninos y Felinos Domésticos", previas: ["Primero", "Segundo", "Tercero"] },
+              { id: "tec_prod_alim", nombre: "Tecnología Aplicada a los Productos Alimenticios", previas: ["inf_zoo", "enf_rum_cer", "epi_salu_pub", "produ_bov_c", "produ_bov_l", "prod_aves"] }
+              { id: "enf_aves", nombre: "Enfermedades de las Aves y los Pilíferos", previas: ["inf_zoo", "prod_aves"] },
+              { id: "enf_equi", nombre: "Enfermedades de los Equinos", previas: ["prod_equi"] },
+              { id: "terio", nombre: "Teriogenología", previas: ["inf_zoo", "enf_rum_cer", "epi_salu_pub", "produ_bov_c", "produ_bov_l", "prod_por", "prod_ovi_capri"] },
+            ]
+          },
+          {
+            numero: "2º cuatrmestre", materias: [
+              { id: "bromato", nombre: "Bromatología, Higiene e Inspección de Productos Alimenticios", previas: ["tec_prod_alim"] },
+              { id: "ana_cli_vet", nombre: "Análisis Clínicos Veterinarios", previas: ["enf_rum_cer", "prod_equi", "enf_canfel"] },
+              { id: "inmuno_apli", nombre: "Inmunología Animal Aplicada", previas: ["enf_rum_cer", "prod_equi", "enf_canfel", "prod_aves", "epi_salu_pub", "inf_zoo"] },
+              { id: "met_com_diag", nombre: "Métodos Complementarios de Diagnóstico", previas: ["prod_equi", "enf_canfel"] },
+              { id: "int_anim_lab", nombre: "Introducción a la Ciencia de los Animales de Laboratorio", previas: ["inf_zoo"] },
+              { id: "biotec_rep", nombre: "Biotecnolofgía de la Reproducción", previas: ["terio"] },
+              { id: "ciru2_anes", nombre: "Cirugía II y Anestesiología", previas: ["terio", "enf_rum_cer", "prod_equi", "enf_canfel"] },
+            ]
+          }
+        ]
+      },
+      {
+        anio: "Sexto", semestres: [
+          {
+            numero: "1º cuatrimestre", materias: [
+              { id: "clin_equi", nombre: "Clínica de Equinos", previas: ["enf_equi", "met_com_diag", "ana_cli_vet", "inmuno_apli", "biotec_rep", "ciru2_anes", "terio"] },
+              { id: "clin_cer", nombre: "Clínica y Sanidad de los Cerdos", previas: ["ana_cli_vet", "inmuno_apli", "biotec_rep", "terio"] },
+              { id: "clin_canyfel", nombre: "Clínica de Caninos y Felinos", previas: ["enf_canfel", "met_com_diag", "ana_cli_vet", "terio"] },
+              { id: "clin_rum", nombre: "Clínica y Sanidad de los Rumiantes", previas: ["enf_rum_cer", "ana_cli_vet", "inmuno_apli", "terio"] }
+              { id: "bien_anim", nombre: "Bienestar Animal", previas: ["Cuarto"] },
+              { id: "etyleg", nombre: "Ética y Lesgilación Veterinaria", previas: ["bromato"] }
+            ]
+          },
+          {
+            numero: "2º cuatrmestre", materias: [
+              { id: "opc1", nombre: "Materia Optativa 1", previas: [] }
+              { id: "opc2", nombre: "Materia Optativa 2", previas: [] }
+              { id: "opc3", nombre: "Materia Optativa 3", previas: [] }
+              { id: "prac", nombre: "Practicas Pre-Profesionales", previas: ["clin_equi", "clin_cer", "clin_canyfel", "clin_rum", "bromato", "biotec_rep"] }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const estadoMaterias = JSON.parse(localStorage.getItem("estadoMaterias") || "{}");
+
+    function crearMalla() {
+      const contenedor = document.getElementById("malla");
+      contenedor.innerHTML = "";
+
+      materias.forEach(anio => {
+        const divAnio = document.createElement("div");
+        divAnio.className = "year";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = anio.anio;
+        divAnio.appendChild(h2);
+
+        anio.semestres.forEach(sem => {
+          const divSem = document.createElement("div");
+          divSem.className = "semestre";
+
+          const h3 = document.createElement("h3");
+          h3.textContent = sem.numero;
+          divSem.appendChild(h3);
+
+          sem.materias.forEach(materia => {
+            const divMat = document.createElement("div");
+            divMat.textContent = materia.nombre;
+            divMat.className = "materia";
+            divMat.dataset.id = materia.id;
+
+            if (estadoMaterias[materia.id]) {
+              divMat.classList.add("tachada");
+            }
+
+            // Verifica si cumple previas
+            if (materia.previas && materia.previas.some(p => !estadoMaterias[p])) {
+              divMat.classList.add("bloqueada");
+            }
+
+            divMat.addEventListener("click", () => {
+              if (divMat.classList.contains("bloqueada")) return;
+              divMat.classList.toggle("tachada");
+              estadoMaterias[materia.id] = divMat.classList.contains("tachada");
+              localStorage.setItem("estadoMaterias", JSON.stringify(estadoMaterias));
+              crearMalla(); // Volver a renderizar para actualizar dependencias
+            });
+
+            divSem.appendChild(divMat);
+          });
+
+          divAnio.appendChild(divSem);
+        });
+
+        contenedor.appendChild(divAnio);
+      });
+    }
+
+    crearMalla();
+  </script>
+
+</body>
+</html>
